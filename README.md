@@ -1,3 +1,3 @@
-# actividad-practica-UTCH
+# Actividad-practica-UTCH
 
 ## Nombre de estudiantes por grupos.
