@@ -1,3 +1,1 @@
-# Actividad-practica-UTCH
-
-## Nombre de estudiantes por grupos.
+# Listado de colaboradores.
