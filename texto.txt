@@ -1,0 +1,4 @@
+Este archivo de texto está creado con el único fin de practicar un pull request.
+
+Como se puede ver en el archivo README.md, es la practica de la actividad practica que se va a desarrollar en clases de Herramientas de programación web, en la carrera de ingeniería en telecomunicaiones e informática.
+
