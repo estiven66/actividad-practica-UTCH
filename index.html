@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa y Avanzada de Git</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+            color: #1F2937;
+        }
+        .active-nav {
+            background-color: #3B82F6;
+            color: white;
+            font-weight: 700;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: #60A5FA;
+            color: white;
+        }
+        .code-inline {
+            background-color: #E5E7EB;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: 600;
+            color: #3B82F6;
+        }
+        .area-box {
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .highlight-area {
+            border-color: #3B82F6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            transform: scale(1.03);
+        }
+        .step-active {
+            font-weight: 700;
+            color: #1F2937;
+            background-color: #D1E5FF;
+        }
+        .step-done {
+            background-color: #10B981;
+            color: white;
+        }
+        /* Estilos específicos para la línea de tiempo */
+        .timeline-item {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 2px solid #E5E7EB;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background-color: #3B82F6;
+            border-radius: 50%;
+            border: 3px solid #F9FAFB;
+        }
+        .conventional-type {
+            font-family: monospace;
+            font-weight: 700;
+            color: #1D4ED8;
+            background-color: #DBEAFE;
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="scroll-smooth">
+
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        <!-- Navegación Lateral Fija -->
+        <aside class="w-full lg:w-64 bg-white p-4 lg:p-8 border-b lg:border-r border-gray-200/80 sticky top-0 lg:min-h-screen z-10 shadow-lg">
+            <h1 class="text-2xl font-black text-[#1F2937] mb-8">Guía Avanzada de Git</h1>
+            <nav class="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+                <a href="#introduccion" class="nav-link active-nav px-4 py-2 rounded-lg text-left whitespace-nowrap">1. Fundamentos</a>
+                <a href="#areas" class="nav-link px-4 py-2 rounded-lg text-left whitespace-nowrap">2. Las 3 Áreas</a>
+                <a href="#flujo" class="nav-link px-4 py-2 rounded-lg text-left whitespace-nowrap">3. Ramificación</a>
+                <a href="#convenciones" class="nav-link px-4 py-2 rounded-lg text-left whitespace-nowrap">4. Convenciones (Commits/Ramas)</a>
+                <a href="#remoto" class="nav-link px-4 py-2 rounded-lg text-left whitespace-nowrap">5. Trabajo Remoto</a>
+                <a href="#comandos" class="nav-link px-4 py-2 rounded-lg text-left whitespace-nowrap">6. Los 12 Esenciales</a>
+                <a href="#avanzado" class="nav-link px-4 py-2 rounded-lg text-left whitespace-nowrap">7. Historial Avanzado</a>
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="flex-1 p-6 md:p-12">
+            
+            <!-- Sección 1: Introducción y Fundamentos -->
+            <section id="introduccion" class="mb-24 min-h-[70vh] flex items-center">
+                <div>
+                    <span class="text-xl font-semibold text-[#3B82F6]">Sistema de Control de Versiones Distribuido</span>
+                    <h2 class="text-6xl md:text-8xl font-extrabold text-[#1F2937] mt-2 mb-6">GIT: El Estándar de la Colaboración</h2>
+                    <p class="text-xl md:text-2xl max-w-4xl leading-relaxed text-gray-700">
+                        Git es el sistema de control de versiones distribuido más utilizado. Su propósito es **rastrear, gestionar y coordinar** los cambios en el código de un proyecto entre múltiples personas. La clave es su naturaleza **distribuida**: cada desarrollador tiene una copia completa del historial, lo que lo hace increíblemente robusto y redundante.
+                    </p>
+                    <div class="mt-8 bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                        <p class="font-bold text-lg text-blue-700">Conceptos Fundamentales</p>
+                        <p class="text-blue-600"><span class="font-semibold">Commit:</span> Una instantánea de tu proyecto en un momento dado. Es la unidad de historial de Git.</p>
+                        <p class="text-blue-600"><span class="font-semibold">HEAD:</span> Es un puntero que siempre indica dónde estás. Generalmente apunta al último commit de la rama actual.</p>
+                        <p class="text-blue-600"><span class="font-semibold">Branch (Rama):</span> Un puntero movible a un commit. Por defecto, el proyecto inicia con la rama `main` o `master`.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 2: Las Tres Áreas (Diagrama Interactivo) -->
+            <section id="areas" class="mb-24">
+                <h2 class="text-4xl font-bold text-[#1F2937] mb-4">2. El Modelo Mental: Las Tres Áreas</h2>
+                <p class="text-lg mb-10 max-w-4xl text-gray-700">
+                    Git gestiona tus archivos a través de tres estados lógicos. Usa los botones para simular los comandos clave y entender el flujo.
+                </p>
+                
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Área de Descripción Dinámica -->
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border border-gray-200/80 sticky top-24 h-fit">
+                        <h3 class="text-2xl font-bold text-[#3B82F6] mb-3" id="area-title">El Flujo de Git</h3>
+                        <p id="area-description" class="text-gray-700 mb-6">
+                            Selecciona un comando para simular el movimiento de los archivos a través de las tres áreas clave de Git.
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <button data-command="init" class="command-btn bg-blue-100 text-blue-800 font-semibold py-2 px-4 rounded-full text-sm hover:bg-blue-200">git init</button>
+                            <button data-command="add" class="command-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-full text-sm hover:bg-gray-300">git add</button>
+                            <button data-command="commit" class="command-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-full text-sm hover:bg-gray-300">git commit</button>
+                            <button data-command="reset" class="command-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-full text-sm hover:bg-gray-300">git reset</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Diagrama de las Tres Áreas -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <!-- Repositorio Local -->
+                        <div id="repo-area" class="area-box bg-green-100 p-6 rounded-xl border-4 border-green-200/80">
+                            <h4 class="text-xl font-bold text-green-700">1. Repositorio Local (.git)</h4>
+                            <p class="text-sm text-green-600">Archivos: Guardados y Confirmados (Commit)</p>
+                            <p class="mt-2 text-sm text-gray-600">Historial permanente y versión estable del proyecto. Es la "base de datos" de tu proyecto.</p>
+                        </div>
+                        
+                        <!-- Staging Area (Área de Preparación) -->
+                        <div id="staging-area" class="area-box bg-yellow-100 p-6 rounded-xl border-4 border-yellow-200/80">
+                            <h4 class="text-xl font-bold text-yellow-700">2. Staging Area (Índice)</h4>
+                            <p class="text-sm text-yellow-600">Archivos: Preparados para el Siguiente Commit</p>
+                            <p class="mt-2 text-sm text-gray-600">Define **exactamente** lo que se incluirá en el próximo commit. Puedes añadir solo partes de un archivo.</p>
+                        </div>
+                        
+                        <!-- Working Directory (Directorio de Trabajo) -->
+                        <div id="working-area" class="area-box bg-red-100 p-6 rounded-xl border-4 border-red-200/80">
+                            <h4 class="text-xl font-bold text-red-700">3. Working Directory</h4>
+                            <p class="text-sm text-red-600">Archivos: Sin seguimiento o Modificados</p>
+                            <p class="mt-2 text-sm text-gray-600">Es donde editas, creas y borras archivos. Lo que ves en tu explorador de archivos.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 3: Flujo y Ramas (Diagrama Interactivo) -->
+            <section id="flujo" class="mb-24">
+                <h2 class="text-4xl font-bold text-[#1F2937] mb-4">3. Flujo de Trabajo: Ramificación y Fusión</h2>
+                <p class="text-lg mb-4 max-w-4xl text-gray-700">
+                    Las **ramas** son fundamentales para el desarrollo colaborativo. Te permiten aislar el trabajo en una nueva funcionalidad o corrección sin desestabilizar la línea principal (`main`).
+                </p>
+                <div class="bg-gray-50 p-4 rounded-lg mb-8">
+                    <p class="font-semibold text-gray-700">Escenario de Flujo Típico:</p>
+                    <div class="flex items-center space-x-2 mt-1">
+                        <span class="code-inline">git checkout main</span>
+                        <span>-></span>
+                        <span class="code-inline">git pull</span>
+                        <span>-></span>
+                        <span class="code-inline">git checkout -b feature/nueva-tarjeta</span>
+                        <span>-></span>
+                        <span class="code-inline">... Trabajo + Commit ...</span>
+                        <span>-></span>
+                        <span class="code-inline">git checkout main</span>
+                        <span>-></span>
+                        <span class="code-inline">git merge feature/nueva-tarjeta</span>
+                        <span>-></span>
+                        <span class="code-inline">git push</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200/80">
+                    <h3 class="text-2xl font-bold text-[#3B82F6] mb-4">Simulación de Ramificación</h3>
+                    <!-- Flujo de Pasos -->
+                    <div class="flex justify-between items-center mb-6 text-center text-sm md:text-base">
+                        <div id="step-0" class="flex-1 p-2 rounded-full step-active">MAIN</div>
+                        <div class="w-8 h-1 bg-gray-300 mx-1"></div>
+                        <div id="step-1" class="flex-1 p-2 rounded-full bg-gray-100 text-gray-500">BRANCH</div>
+                        <div class="w-8 h-1 bg-gray-300 mx-1"></div>
+                        <div id="step-2" class="flex-1 p-2 rounded-full bg-gray-100 text-gray-500">COMMIT</div>
+                        <div class="w-8 h-1 bg-gray-300 mx-1"></div>
+                        <div id="step-3" class="flex-1 p-2 rounded-full bg-gray-100 text-gray-500">MERGE</div>
+                    </div>
+
+                    <!-- Botones de Simulación -->
+                    <div class="flex justify-center gap-4 mb-8">
+                        <button id="simulate-btn" class="bg-[#3B82F6] text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition">INICIAR SIMULACIÓN</button>
+                        <button id="reset-flow-btn" class="bg-gray-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-600 transition" disabled>REINICIAR</button>
+                    </div>
+
+                    <!-- Diagrama Visual -->
+                    <div class="relative h-48 mt-10">
+                        <!-- Linea MAIN -->
+                        <div class="absolute left-1/2 -ml-0.5 w-1 bg-[#1F2937] h-full" id="main-line"></div>
+                        
+                        <!-- Linea FEATURE Branch -->
+                        <div class="absolute left-1/2 top-[50%] transform -translate-x-1/2 h-0 w-0 border-t-2 border-r-2 border-[#10B981] transition-all duration-1000 ease-in-out" id="feature-branch-line" style="width: 0px; height: 0px; top: 20px; border-radius: 0 50px 0 0; opacity: 0;"></div>
+                        
+                        <!-- Nodos -->
+                        <div class="absolute left-1/2 -ml-3 top-0 w-6 h-6 bg-[#1F2937] rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md z-10" id="commit-A">A</div>
+                        <div class="absolute left-1/2 -ml-3 top-[50%] w-6 h-6 bg-[#3B82F6] rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md z-10 opacity-0 transition-opacity duration-500" id="commit-B">B</div>
+                        <div class="absolute left-1/2 -ml-3 w-6 h-6 bg-[#10B981] rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md z-10 opacity-0 transition-opacity duration-500" id="commit-C" style="left: calc(50% + 50px); top: 50px;">C</div>
+                        <div class="absolute left-1/2 -ml-3 top-full w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md z-10 opacity-0 transition-opacity duration-500" id="commit-D" style="top: 150px;">D</div>
+                    </div>
+
+                    <div id="flow-description" class="mt-8 text-center text-lg font-medium text-gray-700">
+                        Comienza con la línea de tiempo principal (`main`).
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección 4: Buenas Prácticas: Conventional Commits y Branching -->
+            <section id="convenciones" class="mb-24">
+                <h2 class="text-4xl font-bold text-[#1F2937] mb-4">4. Convenciones: Nomenclatura Profesional</h2>
+                <p class="text-lg mb-8 max-w-4xl text-gray-700">
+                    Adoptar convenciones claras hace que el historial del proyecto sea legible, automatizable y auditable.
+                </p>
+
+                <!-- Conventional Commits -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200/80 mb-8">
+                    <h3 class="text-2xl font-bold text-[#3B82F6] mb-3">Conventional Commits (Mensajes)</h3>
+                    <p class="mb-4 text-gray-700">Estándar para crear mensajes de commit explícitos. Formato: <span class="code-inline">tipo(alcance): descripción</span></p>
+                    
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <span class="conventional-type">feat:</span>
+                            <p class="text-sm mt-1 text-gray-600">Nueva característica (feature).</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <span class="conventional-type">fix:</span>
+                            <p class="text-sm mt-1 text-gray-600">Corrección de un error (bug fix).</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <span class="conventional-type">chore:</span>
+                            <p class="text-sm mt-1 text-gray-600">Mantenimiento (ej. actualización de dependencias).</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <span class="conventional-type">docs:</span>
+                            <p class="text-sm mt-1 text-gray-600">Cambios en la documentación.</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <span class="conventional-type">style:</span>
+                            <p class="text-sm mt-1 text-gray-600">Formato o estilo (sin afectar lógica).</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <span class="conventional-type">BREAKING CHANGE:</span>
+                            <p class="text-sm mt-1 text-gray-600">Debe estar en el cuerpo si hay un cambio incompatible.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conventional Branching -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200/80">
+                    <h3 class="text-2xl font-bold text-[#3B82F6] mb-3">Conventional Branching (Ramas)</h3>
+                    <p class="mb-4 text-gray-700">Estructura la colaboración mediante prefijos claros para los nombres de las ramas.</p>
+                    
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="p-2 bg-gray-50 rounded-lg"><span class="code-inline">main/master:</span> La línea de producción, siempre estable.</li>
+                        <li class="p-2 bg-gray-50 rounded-lg"><span class="code-inline">develop:</span> Rama de integración para los desarrolladores.</li>
+                        <li class="p-2 bg-gray-50 rounded-lg"><span class="code-inline">feature/&lt;nombre&gt;:</span> Para nuevas funcionalidades. Ejemplo: <span class="code-inline">feature/login-google</span>.</li>
+                        <li class="p-2 bg-gray-50 rounded-lg"><span class="code-inline">bugfix/&lt;nombre&gt;:</span> Para correcciones de errores. Ejemplo: <span class="code-inline">bugfix/carrito-vacio</span>.</li>
+                        <li class="p-2 bg-gray-50 rounded-lg"><span class="code-inline">hotfix/&lt;nombre&gt;:</span> Para correcciones críticas directamente en producción.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Sección 5: Trabajo Remoto y Sincronización -->
+            <section id="remoto" class="mb-24">
+                <h2 class="text-4xl font-bold text-[#1F2937] mb-4">5. Trabajo Remoto y Sincronización</h2>
+                <p class="text-lg mb-8 max-w-4xl text-gray-700">
+                    La colaboración requiere la sincronización con un repositorio central (Remoto) alojado en servicios como GitHub o GitLab.
+                </p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl border border-blue-200/80 shadow">
+                        <h3 class="text-2xl font-bold text-[#3B82F6] mb-3">Enviar Cambios (Outbound)</h3>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="font-semibold"><span class="code-inline">git push</span>: Sube tus commits locales a la rama remota.</li>
+                            <li class="font-semibold"><span class="code-inline">git remote -v</span>: Muestra tus repositorios remotos configurados (típicamente `origin`).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-blue-200/80 shadow">
+                        <h3 class="text-2xl font-bold text-[#3B82F6] mb-3">Recibir Cambios (Inbound)</h3>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="font-semibold"><span class="code-inline">git fetch</span>: Descarga los metadatos de los cambios remotos (sin aplicar a tu código).</li>
+                            <li class="font-semibold"><span class="code-inline">git pull</span>: Es la combinación de `git fetch` y `git merge`. Descarga y **fusiona** automáticamente los cambios remotos con tu rama local.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-8 bg-yellow-100 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <p class="font-bold text-yellow-700">Manejo de Conflictos (¡Clave!)</p>
+                    <p class="text-yellow-600">Un conflicto ocurre cuando dos ramas (o dos desarrolladores) modifican las mismas líneas de código. Git lo marca y debes **resolverlo manualmente** editando el archivo, eliminando las marcas de conflicto (`<<<<<<<`, `=======`, `>>>>>>>`), y haciendo un commit final de la resolución.</p>
+                </div>
+            </section>
+
+            <!-- Sección 6: Los 12 Comandos Esenciales -->
+            <section id="comandos" class="mb-24">
+                <h2 class="text-4xl font-bold text-[#1F2937] mb-4">6. Los 12 Comandos Imprescindibles</h2>
+                <p class="text-lg mb-8 max-w-4xl text-gray-700">
+                    Esta es la caja de herramientas mínima que todo desarrollador debe dominar para operar un repositorio Git.
+                </p>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200/80">
+                    <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                        <!-- Command 1-6 -->
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">1. git init / git clone</h4>
+                            <p class="text-gray-700 text-sm">Crea un repo nuevo (<span class="code-inline">init</span>) o copia uno remoto (<span class="code-inline">clone</span>).</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">2. git status</h4>
+                            <p class="text-gray-700 text-sm">Reporta el estado de los archivos (Modificado, Staged, Untracked).</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">3. git add &lt;archivo&gt;</h4>
+                            <p class="text-gray-700 text-sm">Mueve archivos modificados al Área de Preparación (Staging).</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">4. git commit -m "&lt;mensaje&gt;"</h4>
+                            <p class="text-gray-700 text-sm">Guarda la instantánea del Staging Area de forma permanente en el historial.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">5. git log --oneline</h4>
+                            <p class="text-gray-700 text-sm">Muestra el historial de commits de la rama actual de forma concisa.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">6. git branch &lt;nombre&gt;</h4>
+                            <p class="text-gray-700 text-sm">Crea una nueva rama, pero no te cambia a ella.</p>
+                        </div>
+                         <!-- Command 7-12 -->
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">7. git checkout &lt;rama/commit&gt;</h4>
+                            <p class="text-gray-700 text-sm">Cambia la rama actual y actualiza los archivos del Directorio de Trabajo.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">8. git merge &lt;rama&gt;</h4>
+                            <p class="text-gray-700 text-sm">Fusiona el historial de la rama especificada en la rama actual.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">9. git push</h4>
+                            <p class="text-gray-700 text-sm">Sube commits al repositorio remoto (ej. GitHub).</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">10. git pull</h4>
+                            <p class="text-gray-700 text-sm">Descarga y fusiona cambios remotos en tu rama local.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">11. git diff</h4>
+                            <p class="text-gray-700 text-sm">Muestra las diferencias entre el Directorio de Trabajo y el Staging, o entre commits.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl text-[#3B82F6]">12. git reset &lt;modo&gt; &lt;commit&gt;</h4>
+                            <p class="text-gray-700 text-sm">Deshace commits o mueve archivos entre el Repositorio y el Staging. **Cuidado con --hard**.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 7: Historial Avanzado -->
+            <section id="avanzado" class="mb-16">
+                <h2 class="text-4xl font-bold text-[#1F2937] mb-4">7. Manipulación Avanzada del Historial</h2>
+                <p class="text-lg mb-8 max-w-4xl text-gray-700">
+                    Estos comandos son potentes y se usan para mantener un historial limpio y lineal, pero requieren precaución.
+                </p>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200/80">
+                    <div class="border-b pb-4 mb-4">
+                        <h3 class="text-2xl font-bold text-[#3B82F6] mb-2"><span class="code-inline">git rebase &lt;rama&gt;</span></h3>
+                        <p class="text-gray-700">Mueve o reescribe una serie de commits para que aparezcan al final de otra rama, creando un historial perfectamente **lineal**. Se prefiere a `merge` en ramas de trabajo, pero NUNCA se debe usar en ramas compartidas que ya han sido pusheadas.</p>
+                    </div>
+                     <div class="border-b pb-4 mb-4">
+                        <h3 class="text-2xl font-bold text-[#3B82F6] mb-2"><span class="code-inline">git cherry-pick &lt;commit-hash&gt;</span></h3>
+                        <p class="text-gray-700">Aplica un solo commit específico de una rama a otra. Útil para llevar una corrección puntual sin fusionar toda la rama.</p>
+                    </div>
+                    <div class="border-b pb-4 mb-4">
+                        <h3 class="text-2xl font-bold text-[#3B82F6] mb-2"><span class="code-inline">git stash</span></h3>
+                        <p class="text-gray-700">Guarda temporalmente los cambios de tu Directorio de Trabajo y Staging para poder cambiar de rama, y luego aplicarlos de nuevo. Útil cuando necesitas cambiar rápido de contexto.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#3B82F6] mb-2"><span class="code-inline">git reflog</span></h3>
+                        <p class="text-gray-700">Muestra un registro de **todos** los movimientos de HEAD en el repositorio. Es el "botón de pánico" que te permite recuperar commits que creías perdidos después de un `reset` o `rebase` fallido.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- 1. Lógica de Navegación Activa ---
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                // Ajuste para la altura de la navegación fija
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active-nav');
+                link.classList.add('bg-white', 'text-gray-700'); 
+                link.classList.remove('bg-blue-100', 'text-blue-800');
+
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active-nav');
+                    link.classList.remove('bg-white', 'text-gray-700'); 
+                }
+            });
+        });
+
+        // --- 2. Lógica de Las Tres Áreas ---
+        const areaCommands = {
+            init: {
+                title: 'git init (Creación)',
+                description: 'Inicializa un nuevo repositorio Git. Esto crea el Directorio de Trabajo y el Repositorio Local, pero el Staging Area está vacío.',
+                highlight: ['repo-area', 'working-area'],
+                color: 'blue'
+            },
+            add: {
+                title: 'git add (Preparación)',
+                description: 'Mueve los archivos modificados o nuevos del Directorio de Trabajo al Área de Preparación (Staging). Es el paso intermedio antes de guardar.',
+                highlight: ['working-area', 'staging-area'],
+                color: 'yellow'
+            },
+            commit: {
+                title: 'git commit (Guardar)',
+                description: 'Toma la instantánea exacta de lo que hay en el Área de Preparación y la guarda permanentemente en el Repositorio Local.',
+                highlight: ['staging-area', 'repo-area'],
+                color: 'green'
+            },
+            reset: {
+                title: 'git reset (Deshacer)',
+                description: 'Dependiendo de los argumentos, puede deshacer la preparación de archivos o reescribir el historial.',
+                highlight: ['repo-area', 'staging-area', 'working-area'],
+                color: 'red'
+            }
+        };
+
+        const areaButtons = document.querySelectorAll('.command-btn');
+        const areaTitle = document.getElementById('area-title');
+        const areaDescription = document.getElementById('area-description');
+        const repoArea = document.getElementById('repo-area');
+        const stagingArea = document.getElementById('staging-area');
+        const workingArea = document.getElementById('working-area');
+
+        function updateAreaHighlight(command) {
+            // Reset all areas
+            [repoArea, stagingArea, workingArea].forEach(area => {
+                area.classList.remove('highlight-area');
+            });
+            
+            // Update UI with command data
+            const data = areaCommands[command];
+            areaTitle.textContent = data.title;
+            areaDescription.textContent = data.description;
+
+            // Highlight affected areas
+            data.highlight.forEach(areaId => {
+                document.getElementById(areaId).classList.add('highlight-area');
+            });
+
+            // Update button styles
+            areaButtons.forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'text-blue-800', 'hover:bg-blue-200');
+                btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                if (btn.dataset.command === command) {
+                    btn.classList.add('bg-blue-100', 'text-blue-800', 'hover:bg-blue-200');
+                    btn.classList.remove('bg-gray-200', 'text-gray-700');
+                }
+            });
+        }
+
+        areaButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                updateAreaHighlight(button.dataset.command);
+            });
+        });
+
+        // Estado inicial de las Tres Áreas
+        updateAreaHighlight('init');
+
+
+        // --- 3. Lógica de Ramificación y Fusión ---
+        const flowSteps = [
+            'step-0', 'step-1', 'step-2', 'step-3'
+        ];
+        const flowDescriptions = [
+            'Paso 1: Iniciamos en la rama principal (`main`), con el commit A (estable).',
+            'Paso 2: Creamos y cambiamos a una nueva rama de característica (`git checkout -b feature`). El trabajo se separa.',
+            'Paso 3: Realizamos cambios y un commit C en la rama `feature`. El `main` sigue en el commit B.',
+            'Paso 4: Volvemos a `main` y ejecutamos `git merge feature`. Los cambios de la rama `feature` se integran permanentemente.'
+        ];
+        let currentFlowStep = 0;
+
+        const simulateBtn = document.getElementById('simulate-btn');
+        const resetFlowBtn = document.getElementById('reset-flow-btn');
+        const flowDescriptionElement = document.getElementById('flow-description');
+        const featureBranchLine = document.getElementById('feature-branch-line');
+        const commitB = document.getElementById('commit-B');
+        const commitC = document.getElementById('commit-C');
+        const commitD = document.getElementById('commit-D');
+
+        function resetFlow() {
+            currentFlowStep = 0;
+            simulateBtn.textContent = 'INICIAR SIMULACIÓN';
+            simulateBtn.disabled = false;
+            resetFlowBtn.disabled = true;
+            flowDescriptionElement.textContent = flowDescriptions[0];
+
+            flowSteps.forEach((id, index) => {
+                const stepElement = document.getElementById(id);
+                stepElement.classList.remove('step-active', 'step-done');
+                if (index === 0) {
+                    stepElement.classList.add('step-active');
+                } else {
+                    stepElement.classList.add('bg-gray-100', 'text-gray-500');
+                }
+            });
+            
+            // Reset visual elements
+            featureBranchLine.style.width = '0px';
+            featureBranchLine.style.height = '0px';
+            featureBranchLine.style.opacity = '0';
+            
+            commitB.style.opacity = '0';
+            commitD.style.opacity = '0';
+            commitC.style.opacity = '0';
+        }
+
+        function nextFlowStep() {
+            if (currentFlowStep === 0) {
+                // Estado inicial: Main (A)
+                currentFlowStep++;
+                simulateBtn.textContent = 'PASO 2: git checkout -b feature';
+                document.getElementById('step-0').classList.remove('step-active');
+                document.getElementById('step-0').classList.add('step-done');
+                document.getElementById('step-1').classList.add('step-active');
+                commitB.style.opacity = '1';
+                flowDescriptionElement.textContent = flowDescriptions[1];
+            } else if (currentFlowStep === 1) {
+                // Crear Branch (B)
+                currentFlowStep++;
+                simulateBtn.textContent = 'PASO 3: git commit -m "Feature C"';
+                document.getElementById('step-1').classList.remove('step-active');
+                document.getElementById('step-1').classList.add('step-done');
+                document.getElementById('step-2').classList.add('step-active');
+                // Simular el Branching visual
+                featureBranchLine.style.width = '100px';
+                featureBranchLine.style.height = '50px';
+                featureBranchLine.style.opacity = '1';
+                commitC.style.opacity = '1';
+                flowDescriptionElement.textContent = flowDescriptions[2];
+
+            } else if (currentFlowStep === 2) {
+                // Commit en Branch (C)
+                currentFlowStep++;
+                simulateBtn.textContent = 'PASO 4: git merge feature';
+                document.getElementById('step-2').classList.remove('step-active');
+                document.getElementById('step-2').classList.add('step-done');
+                document.getElementById('step-3').classList.add('step-active');
+                // En este punto, C está separado
+                flowDescriptionElement.textContent = flowDescriptions[3];
+                
+            } else if (currentFlowStep === 3) {
+                // Merge (D)
+                currentFlowStep++;
+                simulateBtn.textContent = 'SIMULACIÓN COMPLETADA';
+                simulateBtn.disabled = true;
+                resetFlowBtn.disabled = false;
+                document.getElementById('step-3').classList.remove('step-active');
+                document.getElementById('step-3').classList.add('step-done');
+                
+                // Simular el Merge visual
+                commitD.style.opacity = '1';
+                flowDescriptionElement.textContent = 'Simulación Terminada: La línea principal ahora incluye el trabajo de la rama feature, creando el nuevo commit D.';
+            }
+        }
+
+        simulateBtn.addEventListener('click', nextFlowStep);
+        resetFlowBtn.addEventListener('click', resetFlow);
+
+        // Inicializar el flujo al cargar
+        resetFlow();
+    </script>
+</body>
+</html>
