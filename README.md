@@ -17,7 +17,15 @@
 - Andres Gomez Ruperto Mena
 - María del Palmar Joselu
 
+<<<<<<< HEAD
 
+=======
+## Grupo 4
+
+- San pablo del cantón
+- Juan Pablo caricatura
+- Chambaculera mena
+>>>>>>> practica
 
 
 
